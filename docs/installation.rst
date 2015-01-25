@@ -31,20 +31,33 @@ Setting up Vagrant
 
      >vagrant ssh
 
-Setting up Treeherder
----------------------
-
 * A python virtual environment will be activated on login, all that is left to do is cd into the project directory:
 
   .. code-block:: bash
 
      (venv)vagrant@precise32:~$ cd treeherder-service
 
+* Build the log parser Cython files, since they are required for both running the tests and a local Treeherder instance
+
+  .. code-block:: bash
+
+     (venv)vagrant@precise32:~/treeherder-service$ python setup.py build_ext --inplace
+
+  NB: If you change something in the treeherder/log_parser folder, remember to repeat this step, otherwise the changes will not take effect.
+
+Running the tests
+------------------------
+
+* The tests can be run without following the local instance steps below.
+
 * You can run the py.test suite with
 
   .. code-block:: bash
 
      (venv)vagrant@precise32:~/treeherder-service$ ./runtests.sh
+
+Setting up a local Treeherder instance
+---------------------
 
 * Initialize the master database
 
@@ -66,12 +79,12 @@ Setting up Treeherder
 
 * And an entry to your host machine /etc/hosts so that you can point your browser to local.treeherder.mozilla.org to reach it
 
-Viewing the local server
-------------------------
-
   .. code-block:: bash
 
      192.168.33.10    local.treeherder.mozilla.org
+
+Viewing the local server
+------------------------
 
 * Start a gunicorn instance listening on port 8000
 
@@ -82,7 +95,7 @@ Viewing the local server
   all the request sent to local.treeherder.mozilla.org will be proxied to it by varnish/apache.
 
 
-* For development you can use the django runserver instead of gunicorn:
+* Or for development you can use the django runserver instead of gunicorn:
 
   .. code-block:: bash
 
@@ -90,10 +103,14 @@ Viewing the local server
 
   this is more convenient because it automatically refreshes every time there's a change in the code.
 
+* Visit http://local.treeherder.mozilla.org in your browser. Note: There will be no data to display until the ingestion tasks are run.
+
 Running the ingestion tasks
 ---------------------------
 
-* Start up one or more celery worker to process async tasks:
+* Ensure the django runserver or gunicorn instance is running first.
+
+* In another Vagrant SSH session, start up a celery worker to process async tasks:
 
   .. code-block:: bash
 
@@ -101,16 +118,6 @@ Running the ingestion tasks
 
   The "-B" option tells the celery worker to startup a beat service, so that periodic tasks can be executed.
   You only need one worker with the beat service enabled. Multiple beat services will result in periodic tasks being executed multiple times
-
-Building changes to the log parsers
------------------------------------
-
-* The log parser shipped with treeherder makes use of cython. If you change something in the treeherder/log_parser folder, remember to re-build the c extensions with:
-
-  .. code-block:: bash
-
-     (venv)vagrant@precise32:~/treeherder-service$ python setup.py build_ext --inplace
-
 
 
 
