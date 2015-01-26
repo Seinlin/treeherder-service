@@ -392,7 +392,7 @@
                    FROM `performance_series`
                    WHERE `interval_seconds` = ? AND `series_signature` = ?",
 
-            "host_type":"read_host"
+            "host_type":"master_host"
 
         },
         "get_all_series_signatures": {
@@ -465,7 +465,7 @@
                    JOIN result_set AS r
                     ON j.result_set_id = r.id
                    WHERE j.id IN (REP0)",
-            "host_type":"read_host"
+            "host_type":"master_host"
 
         },
         "get_last_eta_by_signatures":{
@@ -669,7 +669,7 @@
                     FROM job_log_url
                     WHERE job_id in (REP0)
                     and active_status='active'",
-            "host_type": "read_host"
+            "host_type": "master_host"
         },
         "get_job_artifact":{
             "sql":"SELECT
@@ -710,7 +710,7 @@
             "sql":"SELECT `id`, `job_guid`, `result_set_id`, `state`, `result`
                    FROM `job`
                    WHERE `active_status` = 'active' AND `job_guid` IN (REP0)",
-            "host_type": "read_host"
+            "host_type": "master_host"
         },
         "get_job_guids_in_states":{
             "sql":"SELECT `job_guid`
@@ -718,7 +718,7 @@
                    WHERE
                    REP0
                    ",
-            "host_type": "read_host"
+            "host_type": "master_host"
         },
         "get_jobs_by_coalesced_guids":{
 
@@ -733,7 +733,7 @@
             "sql":"SELECT `id`, `revision_hash`, `push_timestamp`
                    FROM `result_set`
                    WHERE `active_status` in ('active', 'onhold') AND `revision_hash` IN (REP0)",
-            "host_type": "read_host"
+            "host_type": "master_host"
         },
         "get_all_result_set_revision_hashes":{
             "sql":"SELECT `revision_hash`
@@ -745,7 +745,7 @@
             "sql":"SELECT `id`, `revision` FROM `revision`
                    WHERE `active_status` = 'active' AND `revision` IN (REP0)",
 
-            "host_type": "read_host"
+            "host_type": "master_host"
         },
         "get_revision_map_id":{
             "sql":"SELECT `id` FROM `revision_map`
